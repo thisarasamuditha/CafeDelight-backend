@@ -1,5 +1,6 @@
 package com.thisara.cafe.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,6 +31,7 @@ public class Item {
 
     private String imageUrl;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = false)
     private List<OrderItem> orderItems = new ArrayList<>();
 
