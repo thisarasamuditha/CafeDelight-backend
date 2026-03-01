@@ -1,5 +1,6 @@
 package com.thisara.cafe.controller;
 
+import com.thisara.cafe.dto.AuthResponse;
 import com.thisara.cafe.dto.LoginRequest;
 import com.thisara.cafe.service.UserService;
 import com.thisara.cafe.entity.User;
@@ -19,12 +20,12 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<User> registerUser(@RequestBody User user) {
+    public ResponseEntity<AuthResponse> registerUser(@RequestBody User user) {
         return ResponseEntity.ok(userService.registerUser(user));
     }
 
     @PostMapping("/login")
-    public ResponseEntity<User> login(@RequestBody LoginRequest loginRequest) {
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest loginRequest) {
         return ResponseEntity.ok(userService.login(loginRequest));
     }}
 

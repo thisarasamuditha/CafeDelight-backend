@@ -1,9 +1,9 @@
 package com.thisara.cafe.service;
 
+import com.thisara.cafe.dto.AuthResponse;
 import com.thisara.cafe.dto.LoginRequest;
 import com.thisara.cafe.entity.User;
 import com.thisara.cafe.repository.UserRepository;
-import org.jspecify.annotations.Nullable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -14,9 +14,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public @Nullable User registerUser(User user) {
-        // In a real application, you would save the user to the database here
-        // For this example, we'll just return the user object as is
+    public AuthResponse registerUser(User user) {
         if(userRepository.existsByEmail(user.getEmail()))
             throw new IllegalArgumentException("Email already registered");
 
@@ -24,16 +22,19 @@ public class UserService {
         user1.setUsername(user.getUsername());
         user1.setEmail(user.getEmail());
         user1.setPassword(user.getPassword());
-        userRepository.save(user1);
-        return user1;
+        User savedUser = userRepository.save(user1);
+        return toAuthResponse(savedUser);
     }
 
-    public @Nullable User login(LoginRequest loginRequest) {
-        // In a real application, you would check the user's credentials against the database here
-        // For this example, we'll just return a dummy user if the email and password match
-        return userRepository.findByEmail(loginRequest.email)
-                .filter(user -> user.getPassword().equals(loginRequest.password))
+    public AuthResponse login(LoginRequest loginRequest) {
+        User user = userRepository.findByEmail(loginRequest.email)
+            .filter(foundUser -> foundUser.getPassword().equals(loginRequest.password))
                 .orElseThrow(() -> new IllegalArgumentException("Invalid email or password"));
 
+        return toAuthResponse(user);
+    }
+
+    private AuthResponse toAuthResponse(User user) {
+        return new AuthResponse(user.getUserId(), user.getUsername(), user.getEmail());
     }
 }
